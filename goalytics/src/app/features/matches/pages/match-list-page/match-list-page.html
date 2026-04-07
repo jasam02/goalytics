@@ -1,1 +1,179 @@
-<p>match-list-page works!</p>
+<section class="matches-page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Match Center</p>
+      <h1>Upcoming Matches</h1>
+      <p class="subtext">
+        Explore sample World Cup fixtures with team matchups, kickoff info, stadium details,
+        recent form, and win probabilities.
+      </p>
+    </div>
+
+    <div class="header-stat">
+      <span class="stat-label">Showing</span>
+      <strong>{{ filteredMatches.length }}</strong>
+      <span class="stat-label">matches</span>
+    </div>
+  </div>
+
+  <div class="filter-row">
+    @for (filter of filterOptions; track filter) {
+      <button
+        type="button"
+        class="filter-pill"
+        [class.active]="selectedFilter === filter"
+        (click)="selectFilter(filter)"
+      >
+        {{ filter }}
+      </button>
+    }
+  </div>
+
+  <div class="match-grid">
+    @for (match of filteredMatches; track match.id) {
+      <div class="match-card">
+        <div class="card-top">
+          <span class="stage-badge">{{ match.stage }}</span>
+          <span class="kickoff">{{ match.kickoff }}</span>
+        </div>
+
+        <div class="versus-layout">
+          <button
+            type="button"
+            class="team-panel team-button left"
+            (click)="openTeamModal(match.homeTeam, match.homeFlag)"
+          >
+            <div class="team-main">
+              <img
+                class="flag"
+                [src]="'https://flagcdn.com/w80/' + match.homeFlag + '.png'"
+                [alt]="match.homeTeam + ' flag'"
+              />
+              <div>
+                <div class="team-label">Home</div>
+                <div class="team-name">{{ match.homeTeam }}</div>
+              </div>
+            </div>
+
+            <div class="team-percent">{{ match.homeWinProbability }}%</div>
+
+            <div class="form-row">
+              @for (result of match.homeForm.split(' '); track $index) {
+                <span
+                  class="form-pill"
+                  [class.win]="result === 'W'"
+                  [class.loss]="result === 'L'"
+                  [class.draw]="result === 'D'"
+                >
+                  {{ result }}
+                </span>
+              }
+            </div>
+          </button>
+
+          <div class="center-panel">
+            <div class="vs-text">VS</div>
+
+            <div class="probability-block">
+              <div class="probability-header">
+                <span>{{ match.homeWinProbability }}%</span>
+                <span>Draw {{ match.drawProbability }}%</span>
+                <span>{{ match.awayWinProbability }}%</span>
+              </div>
+
+              <div class="probability-bar">
+                <div class="bar-segment home" [style.width.%]="match.homeWinProbability"></div>
+                <div class="bar-segment draw" [style.width.%]="match.drawProbability"></div>
+                <div class="bar-segment away" [style.width.%]="match.awayWinProbability"></div>
+              </div>
+            </div>
+
+            <div class="stadium-block">
+              <div class="meta-label">Stadium</div>
+              <div class="meta-value">{{ match.stadium }}</div>
+              <div class="meta-subvalue">{{ match.city }}</div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="team-panel team-button right"
+            (click)="openTeamModal(match.awayTeam, match.awayFlag)"
+          >
+            <div class="team-main">
+              <div>
+                <div class="team-label">Away</div>
+                <div class="team-name">{{ match.awayTeam }}</div>
+              </div>
+
+              <img
+                class="flag"
+                [src]="'https://flagcdn.com/w80/' + match.awayFlag + '.png'"
+                [alt]="match.awayTeam + ' flag'"
+              />
+            </div>
+
+            <div class="team-percent">{{ match.awayWinProbability }}%</div>
+
+            <div class="form-row right-form">
+              @for (result of match.awayForm.split(' '); track $index) {
+                <span
+                  class="form-pill"
+                  [class.win]="result === 'W'"
+                  [class.loss]="result === 'L'"
+                  [class.draw]="result === 'D'"
+                >
+                  {{ result }}
+                </span>
+              }
+            </div>
+          </button>
+        </div>
+
+        <div class="card-footer">
+          <span class="favorite-chip">{{ getFavoriteLabel(match) }}</span>
+          <span class="details-link" (click)="goToMatch(match.id)">View Match →</span>
+        </div>
+
+        <p class="headline">{{ match.headline }}</p>
+      </div>
+    }
+  </div>
+</section>
+
+@if (selectedTeam) {
+  <div
+    class="team-modal-backdrop"
+    animate.enter="modal-backdrop-enter"
+    animate.leave="modal-backdrop-leave"
+    (click)="closeModal()"
+  >
+    <div
+      class="team-modal-card"
+      animate.enter="modal-card-enter"
+      animate.leave="modal-card-leave"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="selectedTeam.name + ' details'"
+    >
+      <div class="team-modal-topbar">
+        <button type="button" class="team-modal-close" (click)="closeModal()">Close</button>
+      </div>
+
+      <div class="team-modal-content">
+        <img
+          class="team-modal-flag"
+          [src]="'https://flagcdn.com/w160/' + selectedTeam.flag + '.png'"
+          [alt]="selectedTeam.name + ' flag'"
+        />
+
+        <div class="team-modal-copy">
+          <p class="team-modal-eyebrow">Team Details</p>
+          <h2>{{ selectedTeam.name }}</h2>
+          <p>This is a placeholder details panel for {{ selectedTeam.name }}.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+}

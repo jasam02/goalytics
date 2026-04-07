@@ -16,3 +16,12 @@ body {
 *::after {
   box-sizing: border-box;
 }
+
+html.modal-open,
+body.modal-open {
+  overflow: hidden;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
