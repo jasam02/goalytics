@@ -4,8 +4,7 @@
       <p class="eyebrow">Match Center</p>
       <h1>Upcoming Matches</h1>
       <p class="subtext">
-        Explore sample World Cup fixtures with team matchups, kickoff info, stadium details,
-        recent form, and win probabilities.
+        Browse scheduled World Cup matches with kickoff times, teams, groups, and stage info.
       </p>
     </div>
 
@@ -34,108 +33,69 @@
       <div class="match-card">
         <div class="card-top">
           <span class="stage-badge">{{ match.stage }}</span>
-          <span class="kickoff">{{ match.kickoff }}</span>
+          <span class="kickoff">{{ match.kickoff | date:'EEE, MMM d, h:mm a' }}</span>
         </div>
 
-        <div class="versus-layout">
+        <div class="teams-layout">
           <button
             type="button"
-            class="team-panel team-button left"
-            (click)="openTeamModal(match.homeTeam, match.homeFlag)"
+            class="team-panel team-button"
+            (click)="openTeamModal(match.homeTeam, match.homeLogo)"
           >
+            <div class="team-topline">Home</div>
+
             <div class="team-main">
               <img
-                class="flag"
-                [src]="'https://flagcdn.com/w80/' + match.homeFlag + '.png'"
-                [alt]="match.homeTeam + ' flag'"
+                class="team-logo"
+                [src]="match.homeLogo"
+                [alt]="match.homeTeam + ' logo'"
               />
-              <div>
-                <div class="team-label">Home</div>
-                <div class="team-name">{{ match.homeTeam }}</div>
-              </div>
-            </div>
-
-            <div class="team-percent">{{ match.homeWinProbability }}%</div>
-
-            <div class="form-row">
-              @for (result of match.homeForm.split(' '); track $index) {
-                <span
-                  class="form-pill"
-                  [class.win]="result === 'W'"
-                  [class.loss]="result === 'L'"
-                  [class.draw]="result === 'D'"
-                >
-                  {{ result }}
-                </span>
-              }
+              <div class="team-name">{{ match.homeTeam }}</div>
             </div>
           </button>
 
           <div class="center-panel">
             <div class="vs-text">VS</div>
 
-            <div class="probability-block">
-              <div class="probability-header">
-                <span>{{ match.homeWinProbability }}%</span>
-                <span>Draw {{ match.drawProbability }}%</span>
-                <span>{{ match.awayWinProbability }}%</span>
+            <div class="meta-stack">
+              <div class="meta-pill">{{ getMetaLabel(match) }}</div>
+
+              <div class="stadium-block">
+                <div class="meta-label">Stadium</div>
+                <div class="meta-value">{{ match.stadium }}</div>
+                @if (match.city) {
+                  <div class="meta-subvalue">{{ match.city }}</div>
+                }
               </div>
 
-              <div class="probability-bar">
-                <div class="bar-segment home" [style.width.%]="match.homeWinProbability"></div>
-                <div class="bar-segment draw" [style.width.%]="match.drawProbability"></div>
-                <div class="bar-segment away" [style.width.%]="match.awayWinProbability"></div>
+              <div class="status-pill">
+                {{ match.status }}
               </div>
-            </div>
-
-            <div class="stadium-block">
-              <div class="meta-label">Stadium</div>
-              <div class="meta-value">{{ match.stadium }}</div>
-              <div class="meta-subvalue">{{ match.city }}</div>
             </div>
           </div>
 
           <button
             type="button"
             class="team-panel team-button right"
-            (click)="openTeamModal(match.awayTeam, match.awayFlag)"
+            (click)="openTeamModal(match.awayTeam, match.awayLogo)"
           >
+            <div class="team-topline">Away</div>
+
             <div class="team-main">
-              <div>
-                <div class="team-label">Away</div>
-                <div class="team-name">{{ match.awayTeam }}</div>
-              </div>
-
+              <div class="team-name">{{ match.awayTeam }}</div>
               <img
-                class="flag"
-                [src]="'https://flagcdn.com/w80/' + match.awayFlag + '.png'"
-                [alt]="match.awayTeam + ' flag'"
+                class="team-logo"
+                [src]="match.awayLogo"
+                [alt]="match.awayTeam + ' logo'"
               />
-            </div>
-
-            <div class="team-percent">{{ match.awayWinProbability }}%</div>
-
-            <div class="form-row right-form">
-              @for (result of match.awayForm.split(' '); track $index) {
-                <span
-                  class="form-pill"
-                  [class.win]="result === 'W'"
-                  [class.loss]="result === 'L'"
-                  [class.draw]="result === 'D'"
-                >
-                  {{ result }}
-                </span>
-              }
             </div>
           </button>
         </div>
 
         <div class="card-footer">
-          <span class="favorite-chip">{{ getFavoriteLabel(match) }}</span>
+          <span class="favorite-chip">{{ getMetaLabel(match) }}</span>
           <span class="details-link" (click)="goToMatch(match.id)">View Match →</span>
         </div>
-
-        <p class="headline">{{ match.headline }}</p>
       </div>
     }
   </div>
@@ -163,15 +123,15 @@
 
       <div class="team-modal-content">
         <img
-          class="team-modal-flag"
-          [src]="'https://flagcdn.com/w160/' + selectedTeam.flag + '.png'"
-          [alt]="selectedTeam.name + ' flag'"
+          class="team-modal-logo"
+          [src]="selectedTeam.logo"
+          [alt]="selectedTeam.name + ' logo'"
         />
 
         <div class="team-modal-copy">
           <p class="team-modal-eyebrow">Team Details</p>
           <h2>{{ selectedTeam.name }}</h2>
-          <p>This is a placeholder details panel for {{ selectedTeam.name }}.</p>
+          <p>This is a placeholder team panel for {{ selectedTeam.name }}.</p>
         </div>
       </div>
     </div>
