@@ -1,0 +1,16 @@
+<nav class="topbar">
+  <div class="brand">Goalytics</div>
+
+  <div class="nav-links">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+    <a routerLink="/matches" routerLinkActive="active">Matches</a>
+    <a routerLink="/teams/1" routerLinkActive="active">Teams</a>
+    <a routerLink="/players/1" routerLinkActive="active">Players</a>
+    <a routerLink="/predictions" routerLinkActive="active">Predictions</a>
+    <a routerLink="/auth/login" routerLinkActive="active">Login</a>
+  </div>
+</nav>
+
+<main class="page-shell">
+  <router-outlet />
+</main>
